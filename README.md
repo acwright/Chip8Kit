@@ -1,3 +1,3 @@
 # Chip8Kit
 
-A description of this package.
+A Swift Package for emulating the Chip-8 system!
