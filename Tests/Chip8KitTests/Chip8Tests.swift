@@ -10,9 +10,15 @@ import XCTest
 final class Chip8Tests: XCTestCase {
     
     func testExample() {
-        let chip8 = Chip8(rom: [])
+        var chip8 = Chip8(rom: [])
         
         try? chip8.execute(opcode: 0xF017)
+        
+        let opcode: Opcode = 0x64FD
+//        let result = (opcode & 0x0F00) >> 8
+//
+        try? chip8.execute(opcode: opcode)
+        XCTAssertTrue(chip8.v[4] == 0xFD)
     }
 
     static var allTests = [

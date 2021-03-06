@@ -139,75 +139,97 @@ public struct Chip8 {
     /// Decode and execute the next opcode
     ///
     /// - Parameter opcode: The opcode to execute
-    internal func execute(opcode: Opcode) throws {
+    internal mutating func execute(opcode: Opcode) throws {
         switch opcode & 0xF000 {
         case 0x0000:
             switch opcode & 0x000F {
             case 0x0000:
                 // 0x00E0 Cleers the screen.
-                break
+                pixels = [Byte](repeating: 0, count: 64 * 32)
+                pc += 2
             case 0x000E:
                 // 0x00EE Return from subroutine.
-                break
+                pc = stack.removeLast()
+                pc += 2
             default:
-                // Calls machine code routine (RCA 1802 for COSMAC VIP) at address NNN; NOP.
+                // NOP (Calls machine code routine (RCA 1802 for COSMAC VIP) at address NNN).
                 break
             }
         case 0x1000:
             // 0x1NNN Jump to address NNN.
-            break
+            pc = opcode & 0x0FFF
         case 0x2000:
             // 0x2NNN Calls subroutine at NNN.
-            break
+            stack.append(pc)
+            pc = opcode & 0x0FFF
         case 0x3000:
             // 0x3XNN Skips the next instruction if VX equals NN. (Usually the next instruction is a jump to skip a code block).
-            break
+            pc = v[(opcode & 0x0F00) >> 8] == opcode & 0x00FF ? pc + 4 : pc + 2
         case 0x4000:
             // 0x4XNN Skips the next instruction if VX doesn't equal NN. (Usually the next instruction is a jump to skip a code block).
+            pc = v[(opcode & 0x0F00) >> 8] != opcode & 0x00FF ? pc + 4 : pc + 2
             break
         case 0x5000:
             switch opcode & 0x000F {
             case 0x0000:
                 // 0x5XY0 Skips the next instruction if VX equals VY. (Usually the next instruction is a jump to skip a code block).
+                pc = v[(opcode & 0x0F00) >> 8] == v[(opcode & 0x00F0) >> 4] ? pc + 4 : pc + 2
                 break
             default:
                 throw Chip8Error.InvalidOpcode(opcode: opcode)
             }
         case 0x6000:
             // 0x6XNN Sets VX to NN
-            break
+            v[(opcode & 0x0F00) >> 8] = UInt8(opcode & 0x00FF)
+            pc += 2
         case 0x7000:
             // 0x7XNN Adds NN to VX. (Carry flag is not changed).
-            break
+            v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x0F00) >> 8] &+ UInt8(opcode & 0x00FF)
+            pc += 2
         case 0x8000:
             switch opcode & 0x000F {
             case 0x0000:
                 // 0x8XY0 Sets VX to the value of VY.
-                break
+                v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4]
+                pc += 2
             case 0x0001:
                 // 0x8XY1 Sets VX to VX OR VY. (Bitwise OR operation).
-                break
+                v[(opcode & 0x0F00) >> 8] |= v[(opcode & 0x00F0) >> 4]
+                pc += 2
             case 0x0002:
                 // 0x8XY2 Sets VX to VX AND VY. (Bitwise AND operation).
-                break
+                v[(opcode & 0x0F00) >> 8] &= v[(opcode & 0x00F0) >> 4]
+                pc += 2
             case 0x0003:
                 // 0x8XY3 Sets VX to VX XOR VY.
-                break
+                v[(opcode & 0x0F00) >> 8] ^= v[(opcode & 0x00F0) >> 4]
+                pc += 2
             case 0x0004:
                 // 0x8XY4 Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
-                break
+                let overflow = v[(opcode & 0x0F00) >> 8].addingReportingOverflow(v[(opcode & 0x00F0) >> 4]).1
+                v[0xF] = overflow ? 0x1 : 0x0
+                pc += 2
             case 0x0005:
                 // 0x8XY5 VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-                break
+                let overflow = v[(opcode & 0x0F00) >> 8].subtractingReportingOverflow(v[(opcode & 0x00F0) >> 4]).1
+                v[0xF] = overflow ? 0x0 : 0x1
+                pc += 2
             case 0x0006:
                 // 0x8XY6 Stores the least significant bit of VX in VF and then shifts VX to the right by 1
-                break
+                v[0xF] = v[(opcode & 0x0F00) >> 8] & 0x1
+                v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x0F00) >> 8] >> 1
+                pc += 2
             case 0x0007:
                 // 0x8XY7 Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-                break
+                let result = v[(opcode & 0x00F0) >> 4].subtractingReportingOverflow(v[(opcode & 0x0F00) >> 8])
+                v[(opcode & 0x0F00) >> 8] = result.0
+                v[0xF] = result.1 ? 0x0 : 0x1
+                pc += 2
             case 0x000E:
                 // 0x8XYE Stores the most significant bit of VX in VF and then shifts VX to the left by 1.
-                break
+                v[0xF] = v[(opcode & 0x0F00) >> 8] & 0b10000000
+                v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x0F00) >> 8] << 1
+                pc += 2
             default:
                 throw Chip8Error.InvalidOpcode(opcode: opcode)
             }
