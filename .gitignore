@@ -33,7 +33,7 @@ xcuserdata/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 
-Carthage
+.swiftpm
 
 # End of https://www.gitignore.io/api/xcode
 
