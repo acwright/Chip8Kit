@@ -237,19 +237,21 @@ public struct Chip8 {
             switch opcode & 0x000F {
             case 0x0000:
                 // 0x9XY0 Skips the next instruction if VX doesn't equal VY. (Usually the next instruction is a jump to skip a code block).
-                break
+                pc = v[(opcode & 0x0F00) >> 8] != v[(opcode & 0x00F0) >> 4] ? pc + 4 : pc + 2
             default:
                 throw Chip8Error.InvalidOpcode(opcode: opcode)
             }
         case 0xA000:
             // 0xANNN Sets I to the address NNN.
-            break
+            i = opcode & 0x0FFF
+            pc += 2
         case 0xB000:
             // 0xBNNN Jumps to the address NNN plus V0.
-            break
+            pc = (opcode & 0x0FFF) + Word(v[0])
         case 0xC000:
             // 0xCXNN Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN.
-            break
+            v[(opcode & 0x0F00) >> 8] = Byte(opcode & 0x00FF) & Byte(arc4random_uniform(255))
+            pc += 2
         case 0xD000:
             // 0xDXYN
             // Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N+1 pixels.
