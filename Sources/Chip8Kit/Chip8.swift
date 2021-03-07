@@ -62,7 +62,7 @@ public struct Chip8 {
     public var soundTimer: Byte = 0x0
     
     /// Keyboard
-    public var keys: Word = 0x0
+    public var keys: [Bool] = [Bool](repeating: false, count: 16)
     
     /// Helpers
     public var isSounding: Bool { return soundTimer > 0 }
@@ -101,7 +101,7 @@ public struct Chip8 {
         pixels = [Byte](repeating: 0, count: 64 * 32)
         delayTimer = 0x0
         soundTimer = 0x0
-        keys = 0x0
+        keys = [Bool](repeating: false, count: 16)
         needsDisplay = false
         
         // Perform a hard reset by erasing RAM
@@ -257,15 +257,16 @@ public struct Chip8 {
             // Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N+1 pixels.
             // Each row of 8 pixels is read as bit-coded starting from memory location I; I value doesn’t change after the execution of this instruction.
             // As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn’t happen
-            break
+            v[0xF] = draw(x: v[(opcode & 0x0F00) >> 8], y: v[(opcode & 0x00F0) >> 8], height: Byte(opcode & 0x000F)) ? 0x1 : 0x0
+            pc += 2
         case 0xE000:
             switch opcode & 0x00FF {
             case 0x009E:
                 // 0xEX9E Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction is a jump to skip a code block).
-                break
+                pc = keys[v[(opcode & 0x0F00) >> 8]] ? pc + 4 : pc + 2
             case 0x001A:
                 // 0xEX1A Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction is a jump to skip a code block).
-                break
+                pc = !keys[v[(opcode & 0x0F00) >> 8]] ? pc + 4 : pc + 2
             default:
                 throw Chip8Error.InvalidOpcode(opcode: opcode)
             }
@@ -273,39 +274,83 @@ public struct Chip8 {
             switch opcode & 0x00FF {
             case 0x0007:
                 // 0xFX07 Sets VX to the value of the delay timer.
-                break
+                v[(opcode & 0x0F00) >> 8] = delayTimer
+                pc += 2
             case 0x000A:
                 // 0xFX0A A key press is awaited, and then stored in VX. (Blocking Operation. All instruction halted until next key event).
-                break
+                for (index, key) in keys.enumerated() {
+                    if key {
+                        v[(opcode & 0x0F00) >> 8] = Byte(index)
+                        pc += 2
+                        break
+                    }
+                }
             case 0x0015:
                 // 0xFX15 Sets the delay timer to VX.
-                break
+                delayTimer = v[(opcode & 0x0F00) >> 8]
+                pc += 2
             case 0x0018:
                 // 0xFX18 Sets the sound timer to VX.
-                break
+                soundTimer = v[(opcode & 0x0F00) >> 8]
+                pc += 2
             case 0x001E:
                 // 0xFX1E Adds VX to I. VF is not affected.
-                break
+                i += Word(v[(opcode & 0x0F00) >> 8])
+                pc += 2
             case 0x0029:
                 // 0xFX29 Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
-                break
+                i = Word(v[(opcode & 0x0F00) >> 8] * Byte(5))
+                pc += 2
             case 0x0033:
                 // 0xFX33
                 // Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
                 // (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
-                break
+                ram[i] = v[(opcode & 0x0F00) >> 8] / 100
+                ram[i + 1] = (v[(opcode & 0x0F00) >> 8] % 100) / 10
+                ram[i + 2] = (v[(opcode & 0x0F00) >> 8] % 100) % 10
+                pc += 2
             case 0x0055:
                 // 0xFX55 Stores V0 to VX (including VX) in memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified
-                break
+                for a in 0...Word(v[(opcode & 0x0F00) >> 8]) {
+                    ram[i + a] = v[a]
+                }
+                pc += 2
             case 0x0065:
                 // 0xFX65 Fills V0 to VX (including VX) with values from memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
-                break
+                for a in 0...Word(v[(opcode & 0x0F00) >> 8]) {
+                    v[a] = ram[i + a]
+                }
+                pc += 2
             default:
                 throw Chip8Error.InvalidOpcode(opcode: opcode)
             }
         default:
             throw Chip8Error.InvalidOpcode(opcode: opcode)
         }
+    }
+    
+    /// Draw the pixels returning true if pixel is flipped
+    ///
+    /// - Parameter x: The x location
+    /// - Parameter y: The y location
+    /// - Parameter height: The height
+    internal mutating func draw(x: Byte, y: Byte, height: Byte) -> Bool {
+        var flipped: Bool = false
+        
+        for row in 0..<height {
+            let line: Byte = ram[i + Word(row)]
+            
+            for col in 0..<8 {
+                if((line & (0x80 >> col)) != 0) {
+                    if(pixels[(x + Byte(col) + ((y + Byte(row)) * 64))] == 1) {
+                        flipped = true
+                        pixels[x + Byte(col) + ((y + Byte(row)) * 64)] ^= 1
+                    }
+                }
+            }
+        }
+        
+        return flipped
     }
     
 }
