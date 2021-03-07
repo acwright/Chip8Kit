@@ -180,11 +180,11 @@ public struct Chip8 {
             }
         case 0x6000:
             // 0x6XNN Sets VX to NN
-            v[(opcode & 0x0F00) >> 8] = UInt8(opcode & 0x00FF)
+            v[(opcode & 0x0F00) >> 8] = Byte(opcode & 0x00FF)
             pc += 2
         case 0x7000:
             // 0x7XNN Adds NN to VX. (Carry flag is not changed).
-            v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x0F00) >> 8] &+ UInt8(opcode & 0x00FF)
+            v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x0F00) >> 8] &+ Byte(opcode & 0x00FF)
             pc += 2
         case 0x8000:
             switch opcode & 0x000F {
@@ -343,8 +343,8 @@ public struct Chip8 {
             for col in 0..<8 {
                 if((line & (0x80 >> col)) != 0) {
                     if(pixels[(x + Byte(col) + ((y + Byte(row)) * 64))] == 1) {
-                        flipped = true
                         pixels[x + Byte(col) + ((y + Byte(row)) * 64)] ^= 1
+                        flipped = true
                     }
                 }
             }
