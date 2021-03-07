@@ -257,7 +257,7 @@ public struct Chip8 {
             // Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N+1 pixels.
             // Each row of 8 pixels is read as bit-coded starting from memory location I; I value doesn’t change after the execution of this instruction.
             // As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn’t happen
-            v[0xF] = draw(x: v[(opcode & 0x0F00) >> 8], y: v[(opcode & 0x00F0) >> 8], height: Byte(opcode & 0x000F)) ? 0x1 : 0x0
+            v[0xF] = draw(x: v[(opcode & 0x0F00) >> 8], y: v[(opcode & 0x00F0) >> 4], height: Byte(opcode & 0x000F)) ? 0x1 : 0x0
             pc += 2
         case 0xE000:
             switch opcode & 0x00FF {
