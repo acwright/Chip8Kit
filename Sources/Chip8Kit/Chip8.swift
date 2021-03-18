@@ -11,10 +11,10 @@ public typealias Word = UInt16
 public typealias Opcode = Word
 
 /// Chip8 Emulator
-public struct Chip8 {
+public struct Chip8: CustomDebugStringConvertible {
     
     /// Chip8 character set
-    private static let Characters: [Byte] = [
+    public static let Characters: [Byte] = [
         0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
         0x20, 0x60, 0x20, 0x20, 0x70, // 1
         0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -55,7 +55,7 @@ public struct Chip8 {
     public var stack: [Word] = [Word]()
     
     /// Pixels
-    public var pixels: [Byte] = [Byte](repeating: 0, count: 64 * 32)
+    public var pixels: [Bool] = [Bool](repeating: false, count: 64 * 32)
     
     /// Timers
     public var delayTimer: Byte = 0x0
@@ -67,6 +67,50 @@ public struct Chip8 {
     /// Helpers
     public var isSounding: Bool { return soundTimer > 0 }
     public var needsDisplay: Bool = false
+    
+    /// Debug Description
+    public var debugDescription: String {
+        var output: String = ""
+        
+        // Print the registers
+        output += "V: \(v.hexValues())" + "\n"
+        
+        // Print the index
+        output += "I: $\(String(format:"%02X", i)) (\(i))" + "\n"
+        
+        // Print the program counter
+        output += "PC: $\(String(format:"%02X", pc)) (\(pc))" + "\n"
+        
+        // Print the stack
+        output += "Stack: \(stack.hexValues())" + "\n"
+        
+        // Print the timers
+        output += "Delay Timer: $\(String(format:"%02X", delayTimer))" + "\n"
+        output += "Sound Timer: $\(String(format:"%02X", soundTimer))" + "\n"
+        
+        // Print the keys
+        output += "Keys: \(keys)" + "\n"
+        
+        // Print helpers
+        output += "isSounding: \(isSounding)" + "\n"
+        output += "needsDisplay: \(needsDisplay)" + "\n"
+        
+        // Print the screen
+        var rows: [String] = []
+        for row in 0..<32 {
+            var rowString = ""
+            for col in 0..<64 {
+                rowString += pixels[col + (row * 64)] ? "1" : "0"
+            }
+            rows.append(rowString)
+        }
+        output += "Pixels:" + "\n" + rows.joined(separator: "\n") + "\n"
+        
+        // Print the RAM
+        output += "RAM:" + "\n" + "\(ram.hexValues())" + "\n"
+        
+        return output
+    }
     
     /// Initialize the system and load ROM data
     ///
@@ -82,7 +126,7 @@ public struct Chip8 {
         load(rom: rom)
     }
     
-    /// Reset the system
+    /// Load ROM into RAM at address
     ///
     /// - Parameter rom: The ROM data to load
     /// - Parameter address: The address in RAM at which to load the ROM data
@@ -92,20 +136,20 @@ public struct Chip8 {
     
     /// Reset the system
     ///
-    /// - Parameter hard: Perform a hard reset (Erase the RAM)
-    public mutating func reset(hard: Bool = true) {
+    /// - Parameter soft: Perform a soft reset (Don't erase the RAM)
+    public mutating func reset(soft: Bool = false) {
         v = [Byte](repeating: 0, count: 16)
         i = 0x0
         pc = 0x200
         stack = [Word]()
-        pixels = [Byte](repeating: 0, count: 64 * 32)
+        pixels = [Bool](repeating: false, count: 64 * 32)
         delayTimer = 0x0
         soundTimer = 0x0
         keys = [Bool](repeating: false, count: 16)
         needsDisplay = false
         
         // Perform a hard reset by erasing RAM
-        if hard {
+        if !soft {
             ram = [Byte](repeating: 0, count: 4096)
         }
     }
@@ -121,8 +165,8 @@ public struct Chip8 {
     
     /// Emulate one timer tick by decrementing timers
     public mutating func tick() throws {
-        if delayTimer < 0 { delayTimer -= 1 }
-        if soundTimer < 0 { soundTimer -= 1 }
+        if delayTimer > 0 { delayTimer -= 1 }
+        if soundTimer > 0 { soundTimer -= 1 }
     }
     
     /// Fetch the next opcode
@@ -145,7 +189,7 @@ public struct Chip8 {
             switch opcode & 0x000F {
             case 0x0000:
                 // 0x00E0 Cleers the screen.
-                pixels = [Byte](repeating: 0, count: 64 * 32)
+                pixels = [Bool](repeating: false, count: 64 * 32)
                 pc += 2
             case 0x000E:
                 // 0x00EE Return from subroutine.
@@ -258,6 +302,7 @@ public struct Chip8 {
             // Each row of 8 pixels is read as bit-coded starting from memory location I; I value doesn’t change after the execution of this instruction.
             // As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn’t happen
             v[0xF] = draw(x: v[(opcode & 0x0F00) >> 8], y: v[(opcode & 0x00F0) >> 4], height: Byte(opcode & 0x000F)) ? 0x1 : 0x0
+            needsDisplay = true
             pc += 2
         case 0xE000:
             switch opcode & 0x00FF {
@@ -342,15 +387,19 @@ public struct Chip8 {
             
             for col in 0..<8 {
                 if((line & (0x80 >> col)) != 0) {
-                    if(pixels[(x + Byte(col) + ((y + Byte(row)) * 64))] == 1) {
-                        pixels[x + Byte(col) + ((y + Byte(row)) * 64)] ^= 1
+                    let i: Word = Word(x) + Word(col) + ((Word(y) + Word(row)) * 64)
+                    
+                    if(pixels[i]) {
                         flipped = true
                     }
+                    
+                    pixels[i] = pixels[i] != true
                 }
             }
         }
         
         return flipped
     }
+
     
 }
