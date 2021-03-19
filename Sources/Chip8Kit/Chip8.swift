@@ -359,7 +359,7 @@ public struct Chip8: CustomStringConvertible, CustomDebugStringConvertible {
                 ram[i + 2] = (v[(opcode & 0x0F00) >> 8] % 100) % 10
                 pc += 2
             case 0x0055:
-                // 0xFX55 Stores V0 to VX (including VX) in memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified
+                // 0xFX55 Stores V0 to VX (including VX) in memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
                 for a in 0...Word(v[(opcode & 0x0F00) >> 8]) {
                     ram[i + a] = v[a]
                 }

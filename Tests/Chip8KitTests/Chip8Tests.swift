@@ -264,6 +264,88 @@ final class Chip8Tests: XCTestCase {
         XCTAssertEqual(chip8.pc, 0x0202)
         chip8.reset(soft: true)
         
+        // 0x8XY4 - Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
+        // TODO
+        
+        // 0x8XY5 - VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+        // TODO
+        
+        // 0x8XY6 - Stores the least significant bit of VX in VF and then shifts VX to the right by 1
+        // TODO
+        
+        // 0x8XY7 - Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+        // TODO
+        
+        // 0x8XYE - Stores the most significant bit of VX in VF and then shifts VX to the left by 1.
+        // TODO
+        
+        // 0x8NNF - Invalid
+        XCTAssertThrowsError(try chip8.execute(opcode: 0x801F))
+        
+        // 0x9XY0 - Skips the next instruction if VX doesn't equal VY. (Usually the next instruction is a jump to skip a code block).
+        chip8.v[0x0] = 0xFF
+        chip8.v[0x1] = 0xEE
+        try? chip8.execute(opcode: 0x9010)
+        XCTAssertEqual(chip8.pc, 0x0204)
+        chip8.reset(soft: true)
+        chip8.v[0x0] = 0xFF
+        chip8.v[0x1] = 0xFF
+        try? chip8.execute(opcode: 0x9010)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        XCTAssertThrowsError(try chip8.execute(opcode: 0x9011))
+        
+        // 0xANNN - Sets I to the address NNN.
+        // TODO
+        
+        // 0xBNNN - Jumps to the address NNN plus V0.
+        // TODO
+        
+        // 0xCXNN - Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN.
+        // TODO
+        
+        // 0xDXYN - Draw
+        // TODO
+        
+        // 0xEX9E Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction is a jump to skip a code block).
+        // TODO
+        
+        // 0xEX1A Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction is a jump to skip a code block).
+        // TODO
+        
+        // 0xENNN - Invalid
+        XCTAssertThrowsError(try chip8.execute(opcode: 0xE000))
+        
+        // 0xFX07 - Sets VX to the value of the delay timer.
+        // TODO
+        
+        // 0xFX0A - A key press is awaited, and then stored in VX. (Blocking Operation. All instruction halted until next key event).
+        // TODO
+        
+        // 0xFX15 - Sets the delay timer to VX.
+        // TODO
+        
+        // 0xFX18 - Sets the sound timer to VX.
+        // TODO
+        
+        // 0xFX1E - Adds VX to I. VF is not affected.
+        // TODO
+        
+        // 0xFX29 Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
+        // TODO
+        
+        // 0xFX33 - Store BCD
+        // TODO
+        
+        // 0xFX55 Stores V0 to VX (including VX) in memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
+        // TODO
+        
+        // 0xFX65 Fills V0 to VX (including VX) with values from memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
+        // TODO
+        
+        // 0xFNNN - Invalid
+        XCTAssertThrowsError(try chip8.execute(opcode: 0xF000))
+        
         // Test Program Counter Overflow
         chip8.pc = 0x0FFF
         XCTAssertThrowsError(try chip8.execute(opcode: 0x0000))
