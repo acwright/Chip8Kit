@@ -11,7 +11,7 @@ public typealias Word = UInt16
 public typealias Opcode = Word
 
 /// Chip8 Emulator
-public struct Chip8: CustomDebugStringConvertible {
+public struct Chip8: CustomStringConvertible, CustomDebugStringConvertible {
     
     /// Chip8 character set
     public static let Characters: [Byte] = [
@@ -36,6 +36,7 @@ public struct Chip8: CustomDebugStringConvertible {
     /// Errors
     enum Chip8Error: Error {
         case MemoryOutOfRange
+        case ProgramCounterOverflow
         case InvalidOpcode(opcode: Opcode)
     }
     
@@ -68,6 +69,11 @@ public struct Chip8: CustomDebugStringConvertible {
     public var isSounding: Bool { return soundTimer > 0 }
     public var needsDisplay: Bool = false
     
+    /// Description
+    public var description: String {
+        return self.debugDescription
+    }
+    
     /// Debug Description
     public var debugDescription: String {
         var output: String = ""
@@ -76,17 +82,17 @@ public struct Chip8: CustomDebugStringConvertible {
         output += "V: \(v.hexValues())" + "\n"
         
         // Print the index
-        output += "I: $\(String(format:"%02X", i)) (\(i))" + "\n"
+        output += "I: \(i.hexValue) (\(i))" + "\n"
         
         // Print the program counter
-        output += "PC: $\(String(format:"%02X", pc)) (\(pc))" + "\n"
+        output += "PC: \(pc.hexValue) (\(pc))" + "\n"
         
         // Print the stack
         output += "Stack: \(stack.hexValues())" + "\n"
         
         // Print the timers
-        output += "Delay Timer: $\(String(format:"%02X", delayTimer))" + "\n"
-        output += "Sound Timer: $\(String(format:"%02X", soundTimer))" + "\n"
+        output += "Delay Timer: \(delayTimer.hexValue)" + "\n"
+        output += "Sound Timer: \(soundTimer.hexValue)" + "\n"
         
         // Print the keys
         output += "Keys: \(keys)" + "\n"
@@ -186,18 +192,18 @@ public struct Chip8: CustomDebugStringConvertible {
     internal mutating func execute(opcode: Opcode) throws {
         switch opcode & 0xF000 {
         case 0x0000:
-            switch opcode & 0x000F {
-            case 0x0000:
+            switch opcode & 0x00FF {
+            case 0x00E0:
                 // 0x00E0 Cleers the screen.
                 pixels = [Bool](repeating: false, count: 64 * 32)
                 pc += 2
-            case 0x000E:
+            case 0x00EE:
                 // 0x00EE Return from subroutine.
                 pc = stack.removeLast()
                 pc += 2
             default:
                 // NOP (Calls machine code routine (RCA 1802 for COSMAC VIP) at address NNN).
-                break
+                pc += 2
             }
         case 0x1000:
             // 0x1NNN Jump to address NNN.
@@ -212,13 +218,11 @@ public struct Chip8: CustomDebugStringConvertible {
         case 0x4000:
             // 0x4XNN Skips the next instruction if VX doesn't equal NN. (Usually the next instruction is a jump to skip a code block).
             pc = v[(opcode & 0x0F00) >> 8] != opcode & 0x00FF ? pc + 4 : pc + 2
-            break
         case 0x5000:
             switch opcode & 0x000F {
             case 0x0000:
                 // 0x5XY0 Skips the next instruction if VX equals VY. (Usually the next instruction is a jump to skip a code block).
                 pc = v[(opcode & 0x0F00) >> 8] == v[(opcode & 0x00F0) >> 4] ? pc + 4 : pc + 2
-                break
             default:
                 throw Chip8Error.InvalidOpcode(opcode: opcode)
             }
@@ -371,6 +375,10 @@ public struct Chip8: CustomDebugStringConvertible {
             }
         default:
             throw Chip8Error.InvalidOpcode(opcode: opcode)
+        }
+        
+        if pc >= 0x1000 {
+            throw Chip8Error.ProgramCounterOverflow
         }
     }
     

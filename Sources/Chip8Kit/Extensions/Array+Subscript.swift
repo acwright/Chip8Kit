@@ -8,7 +8,7 @@ import Foundation
 
 extension Array {
     
-    subscript(place: Word) -> Element {
+    subscript(place: Byte) -> Element {
         get {
             return self[Int(place)]
         }
@@ -17,7 +17,7 @@ extension Array {
         }
     }
     
-    subscript(place: Byte) -> Element {
+    subscript(place: Word) -> Element {
         get {
             return self[Int(place)]
         }

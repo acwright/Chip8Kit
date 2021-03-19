@@ -2,7 +2,7 @@
 //  XCTestManifests.swift
 //  Chip8Kit
 //
-//  Copyright (c) 2021 A.C. Wright
+//  Created by Aaron Wright on 3/6/21.
 
 import XCTest
 
@@ -10,6 +10,10 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(Chip8Tests.allTests),
+        testCase(ArrayHelpersTests.allTests),
+        testCase(ArraySubscriptTests.allTests),
+        testCase(ByteHexTests.allTests),
+        testCase(WordHexTests.allTests),
     ]
 }
 #endif

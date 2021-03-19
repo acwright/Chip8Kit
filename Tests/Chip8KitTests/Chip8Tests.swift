@@ -2,7 +2,7 @@
 //  Chip8Tests.swift
 //  Chip8Kit
 //
-//  Copyright (c) 2021 A.C. Wright
+//  Created by Aaron Wright on 3/6/21.
 
 import XCTest
 @testable import Chip8Kit
@@ -155,7 +155,118 @@ final class Chip8Tests: XCTestCase {
     }
     
     func testExecute() {
-        // TODO: Test opcodes
+        var chip8 = Chip8(rom: Chip8Tests.testROM)
+        
+        // 0x00E0 - Clear the screen
+        let _ = chip8.draw(x: 0x0, y: 0x0, height: 0x5) // Draw a "0" from the Character set at X0, Y0
+        try? chip8.execute(opcode: 0x00E0)
+        XCTAssertEqual(chip8.pixels, [Bool](repeating: false, count: 64 * 32))
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x00EE - Returns from a subroutine.
+        chip8.stack.append(0x200)
+        try? chip8.execute(opcode: 0x00EE)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x0NNN - NOP
+        try? chip8.execute(opcode: 0x0000)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+
+        // 0x1NNN - Jump to address NNN.
+        try? chip8.execute(opcode: 0x1300)
+        XCTAssertEqual(chip8.pc, 0x0300)
+        chip8.reset(soft: true)
+        
+        // 0x2NNN - Calls subroutine at NNN.
+        try? chip8.execute(opcode: 0x2300)
+        XCTAssertTrue(chip8.stack.contains(0x0200))
+        XCTAssertEqual(chip8.pc, 0x0300)
+        chip8.reset(soft: true)
+        
+        // 0x3NNN - Skips the next instruction if VX equals NN. (Usually the next instruction is a jump to skip a code block).
+        chip8.v[0x0] = 0xFF
+        try? chip8.execute(opcode: 0x30FF)
+        XCTAssertEqual(chip8.pc, 0x0204)
+        chip8.reset(soft: true)
+        chip8.v[0x0] = 0xFF
+        try? chip8.execute(opcode: 0x30EE)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x4XNN - Skips the next instruction if VX doesn't equal NN. (Usually the next instruction is a jump to skip a code block).
+        chip8.v[0x0] = 0xFF
+        try? chip8.execute(opcode: 0x40FF)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        chip8.v[0x0] = 0xFF
+        try? chip8.execute(opcode: 0x40EE)
+        XCTAssertEqual(chip8.pc, 0x0204)
+        chip8.reset(soft: true)
+        
+        // 0x5XY0 - Skips the next instruction if VX equals VY. (Usually the next instruction is a jump to skip a code block).
+        chip8.v[0x0] = 0xFF
+        chip8.v[0x1] = 0xFF
+        try? chip8.execute(opcode: 0x5010)
+        XCTAssertEqual(chip8.pc, 0x0204)
+        chip8.reset(soft: true)
+        chip8.v[0x0] = 0xFF
+        chip8.v[0x1] = 0xEE
+        try? chip8.execute(opcode: 0x5010)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        XCTAssertThrowsError(try chip8.execute(opcode: 0x5011))
+        
+        // 0x6XNN - Sets VX to NN
+        try? chip8.execute(opcode: 0x60FF)
+        XCTAssertEqual(chip8.v[0x0], 0xFF)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x7XNN - Adds NN to VX. (Carry flag is not changed).
+        chip8.v[0x0] = 0x11
+        try? chip8.execute(opcode: 0x7011)
+        XCTAssertEqual(chip8.v[0x0], 0x22)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x8XY0 - Sets VX to the value of VY.
+        XCTAssertEqual(chip8.v[0x0], 0x00)
+        chip8.v[0x1] = 0xFF
+        try? chip8.execute(opcode: 0x8010)
+        XCTAssertEqual(chip8.v[0x0], 0xFF)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x8XY1 - Sets VX to VX OR VY. (Bitwise OR operation).
+        chip8.v[0x0] = 0x01
+        chip8.v[0x1] = 0x10
+        try? chip8.execute(opcode: 0x8011)
+        XCTAssertEqual(chip8.v[0x0], 0x11)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x8XY2 - Sets VX to VX AND VY. (Bitwise AND operation).
+        chip8.v[0x0] = 0x01
+        chip8.v[0x1] = 0x10
+        try? chip8.execute(opcode: 0x8012)
+        XCTAssertEqual(chip8.v[0x0], 0x00)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // 0x8XY3 - Sets VX to VX XOR VY.
+        chip8.v[0x0] = 0x11
+        chip8.v[0x1] = 0x10
+        try? chip8.execute(opcode: 0x8013)
+        XCTAssertEqual(chip8.v[0x0], 0x01)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
+        
+        // Test Program Counter Overflow
+        chip8.pc = 0x0FFF
+        XCTAssertThrowsError(try chip8.execute(opcode: 0x0000))
     }
     
     func testDraw() {
@@ -308,7 +419,29 @@ final class Chip8Tests: XCTestCase {
         XCTAssertTrue(collision2) // This time it should collide
         XCTAssertEqual(chip8.pixels, [Bool](repeating: false, count: 64 * 32))
     }
+    
+    func testIsSounding() {
+        var chip8 = Chip8(rom: [])
+        
+        XCTAssertFalse(chip8.isSounding)
+        
+        chip8.soundTimer = 100
+        
+        XCTAssertTrue(chip8.isSounding)
+    }
+    
+    func testDescription() {
+        let chip8 = Chip8(rom: [])
+        
+        XCTAssertNotNil(chip8.description)
+    }
 
+    func testDebugDescription() {
+        let chip8 = Chip8(rom: [])
+        
+        XCTAssertNotNil(chip8.debugDescription)
+    }
+    
     static var allTests = [
         ("testInit", testInit),
         ("testLoad", testLoad),
@@ -318,6 +451,9 @@ final class Chip8Tests: XCTestCase {
         ("testFetch", testFetch),
         ("testExecute", testExecute),
         ("testDraw", testDraw),
+        ("testIsSounding", testIsSounding),
+        ("testDescription", testDescription),
+        ("testDebugDescription", testDebugDescription),
     ]
     
 }
