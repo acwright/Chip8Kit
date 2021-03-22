@@ -265,16 +265,49 @@ final class Chip8Tests: XCTestCase {
         chip8.reset(soft: true)
         
         // 0x8XY4 - Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
-        // TODO
+        chip8.v[0x0] = 0x01
+        chip8.v[0x1] = 0x01
+        try? chip8.execute(opcode: 0x8014)
+        XCTAssertEqual(chip8.v[0x0], 0x02) // 1 + 1 = 2
+        XCTAssertEqual(chip8.v[0xF], 0x00) // Carry not set
+        chip8.reset(soft: true)
+        chip8.v[0x0] = 0xFF
+        chip8.v[0x1] = 0x01
+        try? chip8.execute(opcode: 0x8014)
+        XCTAssertEqual(chip8.v[0x0], 0x00) // 256 + 1 = 0 (carry 1)
+        XCTAssertEqual(chip8.v[0xF], 0x01) // Carry set
+        chip8.reset(soft: true)
         
         // 0x8XY5 - VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-        // TODO
+        chip8.v[0x0] = 0x01
+        chip8.v[0x1] = 0x01
+        try? chip8.execute(opcode: 0x8015)
+        XCTAssertEqual(chip8.v[0x0], 0x00) // 1 - 1 = 0
+        XCTAssertEqual(chip8.v[0xF], 0x01) // No borrow
+        chip8.reset(soft: true)
+        chip8.v[0x0] = 0x00
+        chip8.v[0x1] = 0x01
+        try? chip8.execute(opcode: 0x8015)
+        XCTAssertEqual(chip8.v[0x0], 0xFF) // 0 - 1 = 0 (borrow 1)
+        XCTAssertEqual(chip8.v[0xF], 0x00) // Borrow
+        chip8.reset(soft: true)
         
         // 0x8XY6 - Stores the least significant bit of VX in VF and then shifts VX to the right by 1
         // TODO
         
         // 0x8XY7 - Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-        // TODO
+        chip8.v[0x0] = 0x01
+        chip8.v[0x1] = 0x01
+        try? chip8.execute(opcode: 0x8015)
+        XCTAssertEqual(chip8.v[0x0], 0x00) // 1 - 1 = 0
+        XCTAssertEqual(chip8.v[0xF], 0x01) // No borrow
+        chip8.reset(soft: true)
+        chip8.v[0x0] = 0x01
+        chip8.v[0x1] = 0x02
+        try? chip8.execute(opcode: 0x8015)
+        XCTAssertEqual(chip8.v[0x0], 0xFF) // 1 - 2 = 255 (borrow 1)
+        XCTAssertEqual(chip8.v[0xF], 0x00) // Borrow
+        chip8.reset(soft: true)
         
         // 0x8XYE - Stores the most significant bit of VX in VF and then shifts VX to the left by 1.
         // TODO

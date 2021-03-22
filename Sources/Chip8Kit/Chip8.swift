@@ -254,13 +254,15 @@ public struct Chip8: CustomStringConvertible, CustomDebugStringConvertible {
                 pc += 2
             case 0x0004:
                 // 0x8XY4 Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
-                let overflow = v[(opcode & 0x0F00) >> 8].addingReportingOverflow(v[(opcode & 0x00F0) >> 4]).1
-                v[0xF] = overflow ? 0x1 : 0x0
+                let result = v[(opcode & 0x0F00) >> 8].addingReportingOverflow(v[(opcode & 0x00F0) >> 4])
+                v[(opcode & 0x0F00) >> 8] = result.0
+                v[0xF] = result.1 ? 0x1 : 0x0
                 pc += 2
             case 0x0005:
                 // 0x8XY5 VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-                let overflow = v[(opcode & 0x0F00) >> 8].subtractingReportingOverflow(v[(opcode & 0x00F0) >> 4]).1
-                v[0xF] = overflow ? 0x0 : 0x1
+                let result = v[(opcode & 0x0F00) >> 8].subtractingReportingOverflow(v[(opcode & 0x00F0) >> 4])
+                v[(opcode & 0x0F00) >> 8] = result.0
+                v[0xF] = result.1 ? 0x0 : 0x1
                 pc += 2
             case 0x0006:
                 // 0x8XY6 Stores the least significant bit of VX in VF and then shifts VX to the right by 1
