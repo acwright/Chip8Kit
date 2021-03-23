@@ -277,7 +277,7 @@ public struct Chip8: CustomStringConvertible, CustomDebugStringConvertible {
                 pc += 2
             case 0x000E:
                 // 0x8XYE Stores the most significant bit of VX in VF and then shifts VX to the left by 1.
-                v[0xF] = v[(opcode & 0x0F00) >> 8] & 0b10000000
+                v[0xF] = (v[(opcode & 0x0F00) >> 8] & 0b10000000) >> 7
                 v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x0F00) >> 8] << 1
                 pc += 2
             default:
@@ -362,13 +362,13 @@ public struct Chip8: CustomStringConvertible, CustomDebugStringConvertible {
                 pc += 2
             case 0x0055:
                 // 0xFX55 Stores V0 to VX (including VX) in memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
-                for a in 0...Word(v[(opcode & 0x0F00) >> 8]) {
+                for a in 0...((opcode & 0x0F00) >> 8) {
                     ram[i + a] = v[a]
                 }
                 pc += 2
             case 0x0065:
                 // 0xFX65 Fills V0 to VX (including VX) with values from memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
-                for a in 0...Word(v[(opcode & 0x0F00) >> 8]) {
+                for a in 0...((opcode & 0x0F00) >> 8) {
                     v[a] = ram[i + a]
                 }
                 pc += 2

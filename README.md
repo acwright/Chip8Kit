@@ -3,7 +3,6 @@
 A Swift package for interpreting Chip-8 ROMs
 
 ## Usage
---------
 
 ```swift
 // ROM
@@ -30,8 +29,11 @@ chip8.cycle()
 chip8.tick()
 ```
 
+## Implementation
+
+Implementation of the main loop is purposely left for the consuming application. The consuming application (presumably a GUI) will need to handle key presses, set up screen redrawing, and create timing for delay and sound.
+
 ## More Info
-------------
 
 - [https://en.wikipedia.org/wiki/CHIP-8](https://en.wikipedia.org/wiki/CHIP-8)
 - [http://devernay.free.fr/hacks/chip8/C8TECH10.HTM](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)

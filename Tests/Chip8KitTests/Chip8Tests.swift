@@ -44,6 +44,137 @@ final class Chip8Tests: XCTestCase {
         0x6B,0x1A,0xA2,0x0E,0xD8,0xB4,0xA2,0x3E,0xD9,0xB4,0x12,0x48,0x13,0xDC
     ]
     
+    static let testPixels: [Bool] = [
+        true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+    ]
+    
     func testInit() {
         let chip8 = Chip8(rom: Chip8Tests.testROM)
 
@@ -270,12 +401,14 @@ final class Chip8Tests: XCTestCase {
         try? chip8.execute(opcode: 0x8014)
         XCTAssertEqual(chip8.v[0x0], 0x02) // 1 + 1 = 2
         XCTAssertEqual(chip8.v[0xF], 0x00) // Carry not set
+        XCTAssertEqual(chip8.pc, 0x0202)
         chip8.reset(soft: true)
         chip8.v[0x0] = 0xFF
         chip8.v[0x1] = 0x01
         try? chip8.execute(opcode: 0x8014)
         XCTAssertEqual(chip8.v[0x0], 0x00) // 256 + 1 = 0 (carry 1)
         XCTAssertEqual(chip8.v[0xF], 0x01) // Carry set
+        XCTAssertEqual(chip8.pc, 0x0202)
         chip8.reset(soft: true)
         
         // 0x8XY5 - VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
@@ -284,16 +417,24 @@ final class Chip8Tests: XCTestCase {
         try? chip8.execute(opcode: 0x8015)
         XCTAssertEqual(chip8.v[0x0], 0x00) // 1 - 1 = 0
         XCTAssertEqual(chip8.v[0xF], 0x01) // No borrow
+        XCTAssertEqual(chip8.pc, 0x0202)
         chip8.reset(soft: true)
         chip8.v[0x0] = 0x00
         chip8.v[0x1] = 0x01
         try? chip8.execute(opcode: 0x8015)
         XCTAssertEqual(chip8.v[0x0], 0xFF) // 0 - 1 = 0 (borrow 1)
         XCTAssertEqual(chip8.v[0xF], 0x00) // Borrow
+        XCTAssertEqual(chip8.pc, 0x0202)
         chip8.reset(soft: true)
         
         // 0x8XY6 - Stores the least significant bit of VX in VF and then shifts VX to the right by 1
-        // TODO
+        chip8.v[0x0] = 0x03
+        chip8.v[0xF] = 0x00
+        try? chip8.execute(opcode: 0x8016)
+        XCTAssertEqual(chip8.v[0x0], 0x01)
+        XCTAssertEqual(chip8.v[0xF], 0x01)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0x8XY7 - Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
         chip8.v[0x0] = 0x01
@@ -301,16 +442,24 @@ final class Chip8Tests: XCTestCase {
         try? chip8.execute(opcode: 0x8015)
         XCTAssertEqual(chip8.v[0x0], 0x00) // 1 - 1 = 0
         XCTAssertEqual(chip8.v[0xF], 0x01) // No borrow
+        XCTAssertEqual(chip8.pc, 0x0202)
         chip8.reset(soft: true)
         chip8.v[0x0] = 0x01
         chip8.v[0x1] = 0x02
         try? chip8.execute(opcode: 0x8015)
         XCTAssertEqual(chip8.v[0x0], 0xFF) // 1 - 2 = 255 (borrow 1)
         XCTAssertEqual(chip8.v[0xF], 0x00) // Borrow
+        XCTAssertEqual(chip8.pc, 0x0202)
         chip8.reset(soft: true)
         
         // 0x8XYE - Stores the most significant bit of VX in VF and then shifts VX to the left by 1.
-        // TODO
+        chip8.v[0x0] = 0xF0
+        chip8.v[0xF] = 0x00
+        try? chip8.execute(opcode: 0x801E)
+        XCTAssertEqual(chip8.v[0x0], 0xE0)
+        XCTAssertEqual(chip8.v[0xF], 0x01)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0x8NNF - Invalid
         XCTAssertThrowsError(try chip8.execute(opcode: 0x801F))
@@ -329,52 +478,130 @@ final class Chip8Tests: XCTestCase {
         XCTAssertThrowsError(try chip8.execute(opcode: 0x9011))
         
         // 0xANNN - Sets I to the address NNN.
-        // TODO
+        try? chip8.execute(opcode: 0xA200)
+        XCTAssertEqual(chip8.i, 0x0200)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xBNNN - Jumps to the address NNN plus V0.
-        // TODO
+        chip8.v[0x0] = 0x01
+        try? chip8.execute(opcode: 0xB200)
+        XCTAssertEqual(chip8.pc, 0x0201)
+        chip8.reset(soft: true)
         
-        // 0xCXNN - Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN.
-        // TODO
+        // 0xCXNN - Sets VX to the result of a bitwise AND operation on a random number (Typically: 0 to 255) and NN.
+        chip8.v[0x0] = 0x0
+        try? chip8.execute(opcode: 0xC0FF)
+        XCTAssertNotEqual(chip8.v[0x0], 0x0)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xDXYN - Draw
-        // TODO
+        try? chip8.execute(opcode: 0xD005)
+        XCTAssertEqual(chip8.pixels, Chip8Tests.testPixels)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xEX9E Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction is a jump to skip a code block).
-        // TODO
+        chip8.v[0x0] = 0x1
+        try? chip8.execute(opcode: 0xE09E)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.keys[0x1] = true
+        try? chip8.execute(opcode: 0xE09E)
+        XCTAssertEqual(chip8.pc, 0x0206)
+        chip8.reset(soft: true)
         
         // 0xEX1A Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction is a jump to skip a code block).
-        // TODO
+        chip8.v[0x0] = 0x1
+        try? chip8.execute(opcode: 0xE01A)
+        XCTAssertEqual(chip8.pc, 0x0204)
+        chip8.keys[0x1] = true
+        try? chip8.execute(opcode: 0xE01A)
+        XCTAssertEqual(chip8.pc, 0x0206)
+        chip8.reset(soft: true)
         
         // 0xENNN - Invalid
         XCTAssertThrowsError(try chip8.execute(opcode: 0xE000))
         
         // 0xFX07 - Sets VX to the value of the delay timer.
-        // TODO
+        chip8.delayTimer = 0xFF
+        try? chip8.execute(opcode: 0xF007)
+        XCTAssertEqual(chip8.v[0x0], 0xFF)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xFX0A - A key press is awaited, and then stored in VX. (Blocking Operation. All instruction halted until next key event).
-        // TODO
+        chip8.keys[0x1] = true
+        try? chip8.execute(opcode: 0xF00A)
+        XCTAssertEqual(chip8.v[0x0], 0x01)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xFX15 - Sets the delay timer to VX.
-        // TODO
+        chip8.v[0x0] = 0x0F
+        try? chip8.execute(opcode: 0xF015)
+        XCTAssertEqual(chip8.delayTimer, 0x0F)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xFX18 - Sets the sound timer to VX.
-        // TODO
+        chip8.v[0x0] = 0x0F
+        try? chip8.execute(opcode: 0xF018)
+        XCTAssertEqual(chip8.soundTimer, 0x0F)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xFX1E - Adds VX to I. VF is not affected.
-        // TODO
+        chip8.v[0x0] = 0x01
+        try? chip8.execute(opcode: 0xF01E)
+        XCTAssertEqual(chip8.i, 0x01)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
-        // 0xFX29 Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
-        // TODO
+        // 0xFX29 - Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
+        chip8.v[0x0] = 0x01
+        try? chip8.execute(opcode: 0xF029)
+        XCTAssertEqual(chip8.i, 0x05)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
-        // 0xFX33 - Store BCD
-        // TODO
+        // 0xFX33
+        // Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
+        // (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
+        chip8.i = 0x400
+        chip8.v[0x0] = 0xFF
+        try? chip8.execute(opcode: 0xF033)
+        XCTAssertEqual(chip8.ram[0x400], 0x02)
+        XCTAssertEqual(chip8.ram[0x401], 0x05)
+        XCTAssertEqual(chip8.ram[0x402], 0x05)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
-        // 0xFX55 Stores V0 to VX (including VX) in memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
-        // TODO
+        // 0xFX55 - Stores V0 to VX (including VX) in memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
+        chip8.i = 0x400
+        chip8.v[0x0] = 0x01
+        chip8.v[0x1] = 0x02
+        chip8.v[0x2] = 0x03
+        try? chip8.execute(opcode: 0xF255)
+        XCTAssertEqual(chip8.ram[0x400], 0x01)
+        XCTAssertEqual(chip8.ram[0x401], 0x02)
+        XCTAssertEqual(chip8.ram[0x402], 0x03)
+        XCTAssertEqual(chip8.i, 0x400)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
-        // 0xFX65 Fills V0 to VX (including VX) with values from memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
-        // TODO
+        // 0xFX65 - Fills V0 to VX (including VX) with values from memory starting at address I. The offset from I is increased by 1 for each value written, but I itself is left unmodified.
+        chip8.i = 0x400
+        chip8.ram[0x400] = 0x01
+        chip8.ram[0x401] = 0x02
+        chip8.ram[0x402] = 0x03
+        try? chip8.execute(opcode: 0xF265)
+        XCTAssertEqual(chip8.v[0x0], 0x01)
+        XCTAssertEqual(chip8.v[0x1], 0x02)
+        XCTAssertEqual(chip8.v[0x2], 0x03)
+        XCTAssertEqual(chip8.i, 0x400)
+        XCTAssertEqual(chip8.pc, 0x0202)
+        chip8.reset(soft: true)
         
         // 0xFNNN - Invalid
         XCTAssertThrowsError(try chip8.execute(opcode: 0xF000))
@@ -395,138 +622,7 @@ final class Chip8Tests: XCTestCase {
         XCTAssertFalse(collision) // No collision should be detected
         XCTAssertNotEqual(chip8.pixels, [Bool](repeating: false, count: 64 * 32))
         
-        let pixels: [Bool] = [
-            true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
-        ]
-        
-        XCTAssertEqual(chip8.pixels, pixels)
+        XCTAssertEqual(chip8.pixels, Chip8Tests.testPixels)
         
         // Draw a "0" from the Character set at X0, Y0
         let collision2 = chip8.draw(x: 0x0, y: 0x0, height: 0x5)
