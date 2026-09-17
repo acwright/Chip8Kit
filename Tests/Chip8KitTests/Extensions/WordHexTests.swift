@@ -2,7 +2,7 @@
 //  WordHexTests.swift
 //  Chip8Kit
 //
-//  Created by Aaron Wright on 3/6/21.
+//  Created by A.C. Wright on 3/6/21.
 
 import XCTest
 @testable import Chip8Kit
